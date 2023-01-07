@@ -17,8 +17,10 @@ import "../styles/navbar.css";
 
 const pages = ["Home"];
 const settings = ["Login", "Registrarse", "Salir"];
+const loggedSettings = ["Tareas", "Salir"];
 
 const Navbar = () => {
+  const isAuth = localStorage.getItem("isAuth");
   const usePathName = () => {
     const location = useLocation();
     return location.pathname;
@@ -27,7 +29,13 @@ const Navbar = () => {
   let navigate = useNavigate();
 
   const LinkBehavior = forwardRef((props, ref) => (
-    <Link ref={ref} to="/" {...props} role={undefined} />
+    <Link
+      ref={ref}
+      to="/"
+      {...props}
+      role={undefined}
+      style={{ textDecoration: "none" }}
+    />
   ));
 
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -46,6 +54,7 @@ const Navbar = () => {
 
   const handleCloseUserMenu = (event) => {
     let textElement = event.target.text;
+
     switch (textElement) {
       case "Registrarse":
         navigate("/signup");
@@ -53,21 +62,25 @@ const Navbar = () => {
       default:
         break;
     }
+
     setAnchorElUser(null);
   };
 
   return (usePathName() === "/") |
     (usePathName() === "/signup") |
-    (usePathName() === "/login") ? (
-    <AppBar position="static">
+    (usePathName() === "/login") |
+    (usePathName() === usePathName()) ? (
+    <AppBar
+      position="static"
+      style={{ backgroundColor: "black", color: "white" }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AssignmentIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component={LinkBehavior}
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -112,7 +125,14 @@ const Navbar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography
+                    textAlign="center"
+                    component={LinkBehavior}
+                    underline="none"
+                    sx={{ color: "black" }}
+                  >
+                    {page}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -121,8 +141,7 @@ const Navbar = () => {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href=""
+            component={LinkBehavior}
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -152,7 +171,7 @@ const Navbar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <AccountCircle />
+                <AccountCircle style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -171,33 +190,47 @@ const Navbar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => {
-                if (setting === settings[1] || setting === settings[2]) {
-                  return (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Link
-                        to={setting === settings[1] ? "/signup" : "/logout"}
-                        underline="none"
-                        className="text-link"
-                      >
-                        {setting}
-                      </Link>
-                    </MenuItem>
-                  );
-                } else {
-                  return (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Link
-                        to={setting.toLocaleLowerCase()}
-                        underline="none"
-                        className="text-link"
-                      >
-                        {setting}
-                      </Link>
-                    </MenuItem>
-                  );
-                }
-              })}
+              {isAuth
+                ? loggedSettings.map((setting) => {
+                    return (
+                      <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                        <Link
+                          to={setting.toLocaleLowerCase()}
+                          underline="none"
+                          className="text-link"
+                        >
+                          {setting}
+                        </Link>
+                      </MenuItem>
+                    );
+                  })
+                : settings.map((setting) => {
+                    if (setting === settings[1] || setting === settings[2]) {
+                      return (
+                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                          <Link
+                            to={setting === settings[1] ? "/signup" : "/logout"}
+                            underline="none"
+                            className="text-link"
+                          >
+                            {setting}
+                          </Link>
+                        </MenuItem>
+                      );
+                    } else {
+                      return (
+                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                          <Link
+                            to={setting.toLocaleLowerCase()}
+                            underline="none"
+                            className="text-link"
+                          >
+                            {setting}
+                          </Link>
+                        </MenuItem>
+                      );
+                    }
+                  })}
             </Menu>
           </Box>
         </Toolbar>
