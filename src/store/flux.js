@@ -1,6 +1,12 @@
 export const getState = ({ setStore, getStore, getActions }) => {
   return {
-    store: {},
-    actions: {},
+    store: {
+      profileUser: {},
+    },
+    actions: {
+      setProfile: (data) => {
+        setStore({ profileUser: data });
+      },
+    },
   };
 };
