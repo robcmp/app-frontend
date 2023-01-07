@@ -22,7 +22,7 @@ const Home = () => {
           color="text.primary"
           gutterBottom
         >
-         Lista de Tareas App
+          Lista de Tareas App
         </Typography>
         <Typography
           variant="h5"
@@ -38,7 +38,7 @@ const Home = () => {
           spacing={2}
           justifyContent="center"
         >
-          <Button variant="contained">Login</Button>
+          <Button variant="contained">Acceder</Button>
         </Stack>
       </Container>
     </Box>
