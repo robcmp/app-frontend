@@ -13,7 +13,7 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import { apiURL } from "../config";
 
-const Login = (props) => {
+const Login = () => {
   const { actions } = useContext(Context);
   let navigate = useNavigate();
   const saveUserInfo = (profileUser) => {
