@@ -40,6 +40,7 @@ const Task = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [modalTitle, setModalTitle] = useState("");
+  const [taskIdToModify, setTaskIdToModify] = useState("");
   const [errors, setErrors] = useState({});
   const { store } = useContext(Context);
   let navigate = useNavigate();
@@ -178,6 +179,7 @@ const Task = () => {
     setModalTitle("");
     setTitle("");
     setDescription("");
+    setTaskIdToModify("");
   };
 
   const handleClickSave = () => {
@@ -207,45 +209,92 @@ const Task = () => {
       createdBy: store.profileUser,
     };
 
-    axios
-      .post(`${apiURL}/task`, data, {
-        headers: headers,
-      })
-      .then((response) => {
-        if (response.status === 201) {
-          handleClose();
+    //POST
+    if (modalTitle.includes("Crear")) {
+      axios
+        .post(`${apiURL}/task`, data, {
+          headers: headers,
+        })
+        .then((response) => {
+          if (response.status === 201) {
+            handleClose();
+            Swal.fire({
+              showConfirmButton: false,
+              text: "La tarea fue creada exitosamente",
+              icon: "success",
+              timer: 2500,
+              timerProgressBar: true,
+            }).then((result) => {
+              if (result.dismiss === Swal.DismissReason.timer) {
+                getTask();
+              }
+            });
+          }
+        })
+        .catch((error) => {
+          if (error.response.status === 401) {
+            localStorage.setItem("token", "null");
+            localStorage.setItem("isAuth", JSON.stringify(false));
+            navigate("/login");
+          }
+          let msg = "";
+          if (error.response) {
+            msg = error.response.data.errors;
+          }
           Swal.fire({
             showConfirmButton: false,
-            text: "La tarea fue creada exitosamente",
-            icon: "success",
+            title: "Error!",
+            text: msg,
+            icon: "error",
             timer: 2500,
             timerProgressBar: true,
-          }).then((result) => {
-            if (result.dismiss === Swal.DismissReason.timer) {
-              getTask();
-            }
           });
-        }
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          localStorage.setItem("token", "null");
-          localStorage.setItem("isAuth", JSON.stringify(false));
-          navigate("/login");
-        }
-        let msg = "";
-        if (error.response) {
-          msg = error.response.data.errors;
-        }
-        Swal.fire({
-          showConfirmButton: false,
-          title: "Error!",
-          text: msg,
-          icon: "error",
-          timer: 2500,
-          timerProgressBar: true,
         });
-      });
+    }
+
+    //PUT
+    if (modalTitle.includes("Modificar")) {
+      const { createdBy, ...restData } = data;
+      axios
+        .put(`${apiURL}/task/${taskIdToModify}`, restData, {
+          headers: headers,
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            handleClose();
+            Swal.fire({
+              showConfirmButton: false,
+              text: "La tarea fue modificada exitosamente",
+              icon: "success",
+              timer: 2500,
+              timerProgressBar: true,
+            }).then((result) => {
+              if (result.dismiss === Swal.DismissReason.timer) {
+                getTask();
+              }
+            });
+          }
+        })
+        .catch((error) => {
+          if (error.response.status === 401) {
+            localStorage.setItem("token", "null");
+            localStorage.setItem("isAuth", JSON.stringify(false));
+            navigate("/login");
+          }
+          let msg = "";
+          if (error.response) {
+            msg = error.response.data.errors;
+          }
+          Swal.fire({
+            showConfirmButton: false,
+            title: "Error!",
+            text: msg,
+            icon: "error",
+            timer: 2500,
+            timerProgressBar: true,
+          });
+        });
+    }
   };
 
   const handleTitleChange = (e) => {
@@ -261,6 +310,7 @@ const Task = () => {
     setModalTitle("Modificar tarea");
     setTitle(values.title);
     setDescription(values.description);
+    setTaskIdToModify(key);
   };
 
   return (
