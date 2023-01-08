@@ -195,7 +195,9 @@ const Navbar = () => {
                     return (
                       <MenuItem key={setting} onClick={handleCloseUserMenu}>
                         <Link
-                          to={setting.toLocaleLowerCase()}
+                          to={
+                            setting === loggedSettings[0] ? "/task" : "/logout"
+                          }
                           underline="none"
                           className="text-link"
                         >
