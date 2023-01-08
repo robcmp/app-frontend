@@ -99,15 +99,15 @@ const Task = () => {
         });
       })
       .catch((error) => {
-        Swal.fire({
-          showConfirmButton: false,
-          title: "Error!",
-          text: "Ha ocurrido un error al intentar obtener las tareas",
-          icon: "error",
-          timer: 2500,
-          timerProgressBar: true,
-        });
         if (error.response.status === 401 || error.response.status === 400) {
+          Swal.fire({
+            showConfirmButton: false,
+            title: "Error!",
+            text: "Ha ocurrido un error al intentar obtener las tareas",
+            icon: "error",
+            timer: 2500,
+            timerProgressBar: true,
+          });
           localStorage.setItem("token", "null");
           localStorage.setItem("isAuth", JSON.stringify(false));
           navigate("/login");
@@ -401,7 +401,7 @@ const Task = () => {
             <List
               sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
             >
-              {!isLoading ? (
+              {addList.length > 0 ? (
                 addList.map((item) => (
                   <ListItem
                     key={item._id}
@@ -433,9 +433,7 @@ const Task = () => {
                   </ListItem>
                 ))
               ) : (
-                <ListItem disableGutters>
-                  <ListItemText primary={`Loading data...`} />
-                </ListItem>
+                <></>
               )}
             </List>
           </Stack>
