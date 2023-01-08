@@ -16,7 +16,7 @@ import Tooltip from "@mui/material/Tooltip";
 import "../styles/navbar.css";
 
 const pages = ["Home"];
-const settings = ["Login", "Registrarse", "Salir"];
+const settings = ["Login", "Registrarse"];
 const loggedSettings = ["Tareas", "Salir"];
 
 const Navbar = () => {
@@ -64,6 +64,22 @@ const Navbar = () => {
     }
 
     setAnchorElUser(null);
+  };
+
+  const handleClickLogOut = (event) => {
+    console.log("Entro evento", event.target.innerHTML);
+    switch (event.target.innerHTML) {
+      case "Tareas":
+        navigate("/task");
+        break;
+      case "Salir":
+        localStorage.setItem("token", "null");
+        localStorage.setItem("isAuth", JSON.stringify(false));
+        navigate(0);
+        break;
+      default:
+        break;
+    }
   };
 
   return (usePathName() === "/") |
@@ -209,11 +225,10 @@ const Navbar = () => {
                     return (
                       <MenuItem key={setting} onClick={handleCloseUserMenu}>
                         <Link
-                          to={
-                            setting === loggedSettings[0] ? "/task" : "/logout"
-                          }
+                          to={setting === loggedSettings[0] ? "/task" : ""}
                           underline="none"
                           className="text-link"
+                          onClick={handleClickLogOut}
                         >
                           {setting}
                         </Link>
@@ -221,11 +236,11 @@ const Navbar = () => {
                     );
                   })
                 : settings.map((setting) => {
-                    if (setting === settings[1] || setting === settings[2]) {
+                    if (setting === settings[1]) {
                       return (
                         <MenuItem key={setting} onClick={handleCloseUserMenu}>
                           <Link
-                            to={setting === settings[1] ? "/signup" : "/logout"}
+                            to={setting === settings[1] ? "/signup" : ""}
                             underline="none"
                             className="text-link"
                           >
