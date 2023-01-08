@@ -5,8 +5,14 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import "../styles/home.css";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  let navigate = useNavigate();
+  const handleClick = () => {
+    navigate("/login");
+  };
+
   return (
     <>
       <Box
@@ -32,7 +38,7 @@ const Home = () => {
             color="text.secondary"
             paragraph
           >
-            Texto de bievenida :B
+            Dar click al boton o usar el menu superior derecho para acceder
           </Typography>
           <Stack
             sx={{ pt: 4 }}
@@ -40,7 +46,9 @@ const Home = () => {
             spacing={2}
             justifyContent="center"
           >
-            <Button variant="contained">Acceder</Button>
+            <Button variant="contained" onClick={handleClick}>
+              Acceder
+            </Button>
           </Stack>
         </Container>
       </Box>
