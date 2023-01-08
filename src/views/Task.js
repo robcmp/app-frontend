@@ -21,6 +21,7 @@ import { Context } from "../store/appContext";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { apiURL } from "../config";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -35,8 +36,18 @@ const Task = () => {
   const [addList, setList] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [errors, setErrors] = useState({});
   const { store } = useContext(Context);
   let navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    Authorization: "Bearer " + token,
+  };
 
   useEffect(() => {
     getUserInfo();
@@ -47,14 +58,14 @@ const Task = () => {
     axios
       .get(`http://localhost:3025/api/v1/user/${store.profileUser}`)
       .then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           Swal.close();
           setUser(response.data);
         }
       })
       .catch((err) => {
         Swal.close();
-        if (err?.response?.status == 401) {
+        if (err?.response?.status === 401) {
           localStorage.setItem("token", "null");
         }
         let msg = "";
@@ -93,7 +104,7 @@ const Task = () => {
           timer: 2500,
           timerProgressBar: true,
         });
-        if (error.response.status == 401 || error.response.status == 400) {
+        if (error.response.status === 401 || error.response.status === 400) {
           localStorage.setItem("token", "null");
           localStorage.setItem("isAuth", JSON.stringify(false));
           navigate("/login");
@@ -109,18 +120,12 @@ const Task = () => {
   };
 
   const deleteTask = (key) => {
-    const token = localStorage.getItem("token");
-    console.log("token", token);
-    console.log("key", key);
-    console.log("store", store.profileUser);
     axios
       .delete(`http://localhost:3025/api/v1/task/${key}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
+        headers: headers,
       })
       .then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           Swal.fire({
             showConfirmButton: false,
             text: "Tarea eliminada exitosamente",
@@ -143,7 +148,7 @@ const Task = () => {
           timer: 2500,
           timerProgressBar: true,
         });
-        if (error.response.status == 401) {
+        if (error.response.status === 401) {
           localStorage.setItem("token", "null");
           localStorage.setItem("isAuth", JSON.stringify(false));
           navigate("/login");
@@ -167,9 +172,88 @@ const Task = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setErrors({});
+    setTitle("");
+    setDescription("");
   };
 
-  const handleClickSave = (value) => {};
+  const handleClickSave = () => {
+    let updatedErrors = {};
+
+    // Validacion Titulo
+    if (title === "") {
+      console.log("Error en campo titulo");
+      updatedErrors["title"] = "Este campo no puede estar vacío";
+      setErrors(updatedErrors);
+      return;
+    }
+
+    // Validacion Descripcion
+    if (description === "") {
+      console.log("Error en campo descripcion");
+      updatedErrors["description"] = "Este campo no puede estar vacío";
+      setErrors(updatedErrors);
+      return;
+    }
+
+    setErrors(updatedErrors);
+
+    let data = {
+      title: title,
+      description: description,
+      createdBy: store.profileUser,
+    };
+    console.log("data", data);
+    console.log("headers", headers);
+
+    axios
+      .post(`${apiURL}/task`, data, {
+        headers: headers,
+      })
+      .then((response) => {
+        if (response.status === 201) {
+          handleClose();
+          Swal.fire({
+            showConfirmButton: false,
+            text: "La tarea fue creada exitosamente",
+            icon: "success",
+            timer: 2500,
+            timerProgressBar: true,
+          }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+              getTask();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          //   localStorage.setItem("token", "null");
+          //   localStorage.setItem("isAuth", JSON.stringify(false));
+          //   navigate("/login");
+        }
+        let msg = "";
+        if (error.response) {
+          msg = error.response.data.errors;
+        }
+        Swal.fire({
+          showConfirmButton: false,
+          title: "Error!",
+          text: msg,
+          icon: "error",
+          timer: 2500,
+          timerProgressBar: true,
+        });
+      });
+  };
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
 
   return (
     <>
@@ -182,18 +266,26 @@ const Task = () => {
         <DialogTitle sx={{ m: 0, p: 2, fontSize: 20 }}>Crear tarea</DialogTitle>
         <DialogContent dividers>
           <FormControl fullWidth>
-            <TextField id="title-txt" label="Título" type="text"></TextField>
+            <TextField
+              id="title-txt"
+              label="Título"
+              type="text"
+              onChange={handleTitleChange}
+              error={errors["title"]}
+              helperText={errors.title}
+            ></TextField>
           </FormControl>
           <FormControl fullWidth sx={{ marginTop: "20px" }}>
-            <TextareaAutosize
+            <TextField
               id="description-txt"
-              aria-label="description"
-              minRows={3}
-              placeholder="Descripción"
-              style={{ width: 552 }}
+              label="Descripción"
+              multiline
+              rows={4}
               type="text"
+              onChange={handleDescriptionChange}
+              error={errors["description"]}
+              helperText={errors.description}
             />
-            {/* <TextField label="Descripción"></TextField> */}
           </FormControl>
         </DialogContent>
         <DialogActions>
