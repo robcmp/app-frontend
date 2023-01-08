@@ -17,7 +17,6 @@ import "../styles/navbar.css";
 
 const pages = ["Home"];
 const settings = ["Login", "Registrarse"];
-const loggedSettings = ["Tareas", "Salir"];
 
 const Navbar = () => {
   const isAuth = localStorage.getItem("isAuth");
@@ -67,21 +66,9 @@ const Navbar = () => {
   };
 
   const handleClickLogOut = (event) => {
-    console.log("Entro evento", event.target.innerHTML);
-    switch (event.target.innerHTML) {
-      case "Tareas":
-        navigate("/task");
-        break;
-      case "Salir":
-        localStorage.setItem("token", "null");
-        localStorage.setItem("isAuth", JSON.stringify(false));
-        navigate(0);
-        break;
-      default:
-        break;
-    }
+    localStorage.clear();
+    navigate("/");
   };
-
   return (usePathName() === "/") |
     (usePathName() === "/signup") |
     (usePathName() === "/login") |
@@ -220,48 +207,53 @@ const Navbar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {isAuth
-                ? loggedSettings.map((setting) => {
+              {isAuth ? (
+                <>
+                  <MenuItem key="tareas" onClick={handleCloseUserMenu}>
+                    <Link to="/task" underline="none" className="text-link">
+                      Tareas
+                    </Link>
+                  </MenuItem>
+                  <MenuItem key="salir" onClick={handleCloseUserMenu}>
+                    <Link
+                      to="/"
+                      underline="none"
+                      className="text-link"
+                      onClick={handleClickLogOut}
+                    >
+                      Salir
+                    </Link>
+                  </MenuItem>
+                </>
+              ) : (
+                settings.map((setting) => {
+                  if (setting === settings[1]) {
                     return (
                       <MenuItem key={setting} onClick={handleCloseUserMenu}>
                         <Link
-                          to={setting === loggedSettings[0] ? "/task" : ""}
+                          to={setting === settings[1] ? "/signup" : ""}
                           underline="none"
                           className="text-link"
-                          onClick={handleClickLogOut}
                         >
                           {setting}
                         </Link>
                       </MenuItem>
                     );
-                  })
-                : settings.map((setting) => {
-                    if (setting === settings[1]) {
-                      return (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                          <Link
-                            to={setting === settings[1] ? "/signup" : ""}
-                            underline="none"
-                            className="text-link"
-                          >
-                            {setting}
-                          </Link>
-                        </MenuItem>
-                      );
-                    } else {
-                      return (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                          <Link
-                            to={setting.toLocaleLowerCase()}
-                            underline="none"
-                            className="text-link"
-                          >
-                            {setting}
-                          </Link>
-                        </MenuItem>
-                      );
-                    }
-                  })}
+                  } else {
+                    return (
+                      <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                        <Link
+                          to={setting.toLocaleLowerCase()}
+                          underline="none"
+                          className="text-link"
+                        >
+                          {setting}
+                        </Link>
+                      </MenuItem>
+                    );
+                  }
+                })
+              )}
             </Menu>
           </Box>
         </Toolbar>
