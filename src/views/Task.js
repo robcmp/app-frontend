@@ -5,7 +5,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 import DialogActions from "@mui/material/DialogActions";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -15,6 +14,8 @@ import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import Tooltip from "@mui/material/Tooltip";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { Context } from "../store/appContext";
@@ -38,6 +39,7 @@ const Task = () => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [modalTitle, setModalTitle] = useState("");
   const [errors, setErrors] = useState({});
   const { store } = useContext(Context);
   let navigate = useNavigate();
@@ -142,7 +144,7 @@ const Task = () => {
         Swal.fire({
           showConfirmButton: false,
           title: "Error!",
-          text: "Ha ocurrido un error al intentar obtener las tareas",
+          text: "Ha ocurrido un error al intentar eliminar la tarea",
           icon: "error",
           timer: 2500,
           timerProgressBar: true,
@@ -167,11 +169,13 @@ const Task = () => {
 
   const handleClickInsertTask = () => {
     setOpen(true);
+    setModalTitle("Crear tarea");
   };
 
   const handleClose = () => {
     setOpen(false);
     setErrors({});
+    setModalTitle("");
     setTitle("");
     setDescription("");
   };
@@ -225,9 +229,9 @@ const Task = () => {
       })
       .catch((error) => {
         if (error.response.status === 401) {
-          //   localStorage.setItem("token", "null");
-          //   localStorage.setItem("isAuth", JSON.stringify(false));
-          //   navigate("/login");
+          localStorage.setItem("token", "null");
+          localStorage.setItem("isAuth", JSON.stringify(false));
+          navigate("/login");
         }
         let msg = "";
         if (error.response) {
@@ -252,6 +256,13 @@ const Task = () => {
     setDescription(e.target.value);
   };
 
+  const handleClickEditTask = (key, values) => {
+    setOpen(true);
+    setModalTitle("Modificar tarea");
+    setTitle(values.title);
+    setDescription(values.description);
+  };
+
   return (
     <>
       <Dialog
@@ -260,13 +271,16 @@ const Task = () => {
         fullWidth
         aria-labelledby="customized-dialog-title"
       >
-        <DialogTitle sx={{ m: 0, p: 2, fontSize: 20 }}>Crear tarea</DialogTitle>
+        <DialogTitle sx={{ m: 0, p: 2, fontSize: 20 }}>
+          {modalTitle}
+        </DialogTitle>
         <DialogContent dividers>
           <FormControl fullWidth>
             <TextField
               id="title-txt"
               label="Título"
               type="text"
+              value={title}
               onChange={handleTitleChange}
               error={errors["title"]}
               helperText={errors.title}
@@ -279,6 +293,7 @@ const Task = () => {
               multiline
               rows={4}
               type="text"
+              value={description}
               onChange={handleDescriptionChange}
               error={errors["description"]}
               helperText={errors.description}
@@ -342,13 +357,26 @@ const Task = () => {
                     key={item._id}
                     disableGutters
                     secondaryAction={
-                      <IconButton aria-label="comment">
-                        <DeleteIcon
-                          onClick={() => {
-                            deleteTask(item._id);
-                          }}
-                        />
-                      </IconButton>
+                      <>
+                        <Tooltip title="Modificar tarea" arrow>
+                          <IconButton>
+                            <ModeEditIcon
+                              onClick={() => {
+                                handleClickEditTask(item._id, item);
+                              }}
+                            />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Eliminar tarea" arrow>
+                          <IconButton aria-label="comment">
+                            <DeleteIcon
+                              onClick={() => {
+                                deleteTask(item._id);
+                              }}
+                            />
+                          </IconButton>
+                        </Tooltip>
+                      </>
                     }
                   >
                     <ListItemText primary={`${item.title}`} />
