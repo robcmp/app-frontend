@@ -1,5 +1,20 @@
+header {
+  background-color: #333 !important;
+}
+
+.burger-menu,
+.setting {
+  color: #64ffda !important;
+}
+
+.brand-icon,
+.brand-text {
+  font-weight: 600;
+  color: #64ffda !important;
+}
+
 .text-link {
   text-decoration: none;
   font-weight: 600;
-  color: #191919
+  color: #191919;
 }
