@@ -11,12 +11,13 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
+import { apiURL } from "../config";
 
 const Login = (props) => {
   const { store, actions } = useContext(Context);
   let navigate = useNavigate();
   const saveUserInfo = (profileUser) => {
-    localStorage.setItem("token", JSON.stringify(profileUser));
+    localStorage.setItem("token", profileUser);
   };
 
   const handleSubmit = async (event) => {
@@ -29,7 +30,7 @@ const Login = (props) => {
     };
 
     await axios
-      .post("http://localhost:3025/api/v1/signin", form)
+      .post(`${apiURL}/signin`, form)
       .then((response) => {
         if (response.status == 200) {
           Swal.close();
@@ -42,7 +43,7 @@ const Login = (props) => {
       .catch((err) => {
         Swal.close();
         if (err?.response?.status == 401) {
-          localStorage.setItem("authToken", "null");
+          localStorage.setItem("token", "null");
         }
         let msg = "";
         if (err.response) {
