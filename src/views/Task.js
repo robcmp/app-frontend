@@ -56,7 +56,7 @@ const Task = () => {
 
   const getUserInfo = () => {
     axios
-      .get(`http://localhost:3025/api/v1/user/${store.profileUser}`)
+      .get(`${apiURL}/user/${store.profileUser}`)
       .then((response) => {
         if (response.status === 200) {
           Swal.close();
@@ -86,7 +86,7 @@ const Task = () => {
 
   const getTask = () => {
     axios
-      .get(`http://localhost:3025/api/v1/task/${store.profileUser}`)
+      .get(`${apiURL}/task/${store.profileUser}`)
       .then((response) => {
         setLoading(false);
         setList(response.data);
@@ -111,7 +111,6 @@ const Task = () => {
         }
 
         if (error.response) {
-          console.log("error.response.status", error.response.status);
           console.log(error.response.data.message);
         } else {
           console.log(error.message);
@@ -121,7 +120,7 @@ const Task = () => {
 
   const deleteTask = (key) => {
     axios
-      .delete(`http://localhost:3025/api/v1/task/${key}`, {
+      .delete(`${apiURL}/task/${key}`, {
         headers: headers,
       })
       .then((response) => {
@@ -203,8 +202,6 @@ const Task = () => {
       description: description,
       createdBy: store.profileUser,
     };
-    console.log("data", data);
-    console.log("headers", headers);
 
     axios
       .post(`${apiURL}/task`, data, {
