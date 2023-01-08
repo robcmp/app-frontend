@@ -76,8 +76,12 @@ const Navbar = () => {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AssignmentIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <AssignmentIcon
+            className="brand-icon"
+            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+          />
           <Typography
+            className="brand-text"
             variant="h6"
             noWrap
             component={LinkBehavior}
@@ -94,7 +98,10 @@ const Navbar = () => {
             Lista Tareas
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+            className="burger-menu"
+          >
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -137,8 +144,12 @@ const Navbar = () => {
               ))}
             </Menu>
           </Box>
-          <AssignmentIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <AssignmentIcon
+            className="brand-icon"
+            sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
+          />
           <Typography
+            className="brand-text"
             variant="h5"
             noWrap
             component={LinkBehavior}
@@ -155,7 +166,10 @@ const Navbar = () => {
           >
             Lista Tareas
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
+            className="pages"
+          >
             {pages.map((page) => (
               <Button
                 key={page}
@@ -168,8 +182,8 @@ const Navbar = () => {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+          <Box sx={{ flexGrow: 0 }} className="settings">
+            <Tooltip title="Abrir funcionalidades">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <AccountCircle style={{ color: "white" }} />
               </IconButton>
