@@ -408,7 +408,11 @@ const Task = () => {
                     disableGutters
                     secondaryAction={
                       <>
-                        <Tooltip title="Modificar tarea" arrow>
+                        <Tooltip
+                          title="Modificar tarea"
+                          placement="right-start"
+                          arrow
+                        >
                           <IconButton>
                             <ModeEditIcon
                               onClick={() => {
@@ -417,7 +421,11 @@ const Task = () => {
                             />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Eliminar tarea" arrow>
+                        <Tooltip
+                          title="Eliminar tarea"
+                          placement="right-start"
+                          arrow
+                        >
                           <IconButton aria-label="comment">
                             <DeleteIcon
                               onClick={() => {
