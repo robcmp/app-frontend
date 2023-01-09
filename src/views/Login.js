@@ -13,8 +13,8 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import { apiURL } from "../config";
 
-const Login = (props) => {
-  const { store, actions } = useContext(Context);
+const Login = () => {
+  const { actions } = useContext(Context);
   let navigate = useNavigate();
   const saveUserInfo = (profileUser) => {
     localStorage.setItem("token", profileUser);
@@ -32,7 +32,7 @@ const Login = (props) => {
     await axios
       .post(`${apiURL}/signin`, form)
       .then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           Swal.close();
           actions.setProfile(response.data.id);
           localStorage.setItem("isAuth", JSON.stringify(true));
@@ -42,7 +42,7 @@ const Login = (props) => {
       })
       .catch((err) => {
         Swal.close();
-        if (err?.response?.status == 401) {
+        if (err?.response?.status === 401) {
           localStorage.setItem("token", "null");
         }
         let msg = "";

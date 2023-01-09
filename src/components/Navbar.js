@@ -16,8 +16,7 @@ import Tooltip from "@mui/material/Tooltip";
 import "../styles/navbar.css";
 
 const pages = ["Home"];
-const settings = ["Login", "Registrarse", "Salir"];
-const loggedSettings = ["Tareas", "Salir"];
+const settings = ["Login", "Registrarse"];
 
 const Navbar = () => {
   const isAuth = localStorage.getItem("isAuth");
@@ -66,6 +65,10 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
+  const handleClickLogOut = (event) => {
+    localStorage.clear();
+    navigate("/");
+  };
   return (usePathName() === "/") |
     (usePathName() === "/signup") |
     (usePathName() === "/login") |
@@ -76,8 +79,12 @@ const Navbar = () => {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AssignmentIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <AssignmentIcon
+            className="brand-icon"
+            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+          />
           <Typography
+            className="brand-text"
             variant="h6"
             noWrap
             component={LinkBehavior}
@@ -94,7 +101,10 @@ const Navbar = () => {
             Lista Tareas
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+            className="burger-menu"
+          >
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -137,8 +147,12 @@ const Navbar = () => {
               ))}
             </Menu>
           </Box>
-          <AssignmentIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <AssignmentIcon
+            className="brand-icon"
+            sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
+          />
           <Typography
+            className="brand-text"
             variant="h5"
             noWrap
             component={LinkBehavior}
@@ -155,7 +169,10 @@ const Navbar = () => {
           >
             Lista Tareas
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
+            className="pages"
+          >
             {pages.map((page) => (
               <Button
                 key={page}
@@ -168,8 +185,8 @@ const Navbar = () => {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+          <Box sx={{ flexGrow: 0 }} className="settings">
+            <Tooltip title="Abrir funcionalidades">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <AccountCircle style={{ color: "white" }} />
               </IconButton>
@@ -190,14 +207,31 @@ const Navbar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {isAuth
-                ? loggedSettings.map((setting) => {
+              {isAuth ? (
+                <>
+                  <MenuItem key="tareas" onClick={handleCloseUserMenu}>
+                    <Link to="/task" underline="none" className="text-link">
+                      Tareas
+                    </Link>
+                  </MenuItem>
+                  <MenuItem key="salir" onClick={handleCloseUserMenu}>
+                    <Link
+                      to="/"
+                      underline="none"
+                      className="text-link"
+                      onClick={handleClickLogOut}
+                    >
+                      Salir
+                    </Link>
+                  </MenuItem>
+                </>
+              ) : (
+                settings.map((setting) => {
+                  if (setting === settings[1]) {
                     return (
                       <MenuItem key={setting} onClick={handleCloseUserMenu}>
                         <Link
-                          to={
-                            setting === loggedSettings[0] ? "/task" : "/logout"
-                          }
+                          to={setting === settings[1] ? "/signup" : ""}
                           underline="none"
                           className="text-link"
                         >
@@ -205,34 +239,21 @@ const Navbar = () => {
                         </Link>
                       </MenuItem>
                     );
-                  })
-                : settings.map((setting) => {
-                    if (setting === settings[1] || setting === settings[2]) {
-                      return (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                          <Link
-                            to={setting === settings[1] ? "/signup" : "/logout"}
-                            underline="none"
-                            className="text-link"
-                          >
-                            {setting}
-                          </Link>
-                        </MenuItem>
-                      );
-                    } else {
-                      return (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                          <Link
-                            to={setting.toLocaleLowerCase()}
-                            underline="none"
-                            className="text-link"
-                          >
-                            {setting}
-                          </Link>
-                        </MenuItem>
-                      );
-                    }
-                  })}
+                  } else {
+                    return (
+                      <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                        <Link
+                          to={setting.toLocaleLowerCase()}
+                          underline="none"
+                          className="text-link"
+                        >
+                          {setting}
+                        </Link>
+                      </MenuItem>
+                    );
+                  }
+                })
+              )}
             </Menu>
           </Box>
         </Toolbar>

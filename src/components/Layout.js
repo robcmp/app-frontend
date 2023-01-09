@@ -1,11 +1,12 @@
 import React from "react";
-import { Routes, Route, Link, BrowserRouter as Router } from "react-router-dom";
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import Home from "../views/Home";
 import Login from "../views/Login";
 import Navbar from "./Navbar";
 import NotFound from "../views/NotFound";
 import PrivateRoutes from "./PrivateRoutes";
 import Task from "../views/Task";
+import SignUp from "../views/SignUp";
 
 const Layout = () => {
   return (
@@ -15,6 +16,7 @@ const Layout = () => {
         {/* Public routes in the App */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         {/*End Public routes in the App */}
 
         {/* Routes for Auth Users */}
