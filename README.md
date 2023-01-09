@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Descripcion
+
+Proyecto realizado con ReactJS, MaterialUI y para las alertas SweetAlert2.
+
 ## Scripts para usar la app
 
 En el directorio del proyecto, abrir la terminal y escribir:
