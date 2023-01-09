@@ -23,8 +23,9 @@ O abrir [http://localhost:3000](http://localhost:3000) para ver la aplicacion en
 
 ## Demo Video
 
-[https://www.awesomescreenshot.com/video/13828055?key=a63c45c69a552d259019ad06773699fd]
-(https://www.awesomescreenshot.com/video/13828055?key=a63c45c69a552d259019ad06773699fd)
+
+https://user-images.githubusercontent.com/20326309/211226770-78a46efa-8a98-4b96-aad9-26ffe5b001cf.mp4
+
 
 ## Learn More
 
